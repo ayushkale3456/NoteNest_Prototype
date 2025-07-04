@@ -1,0 +1,21 @@
+# Ignore IDE/project files
+.idea/
+*.iml
+*.class
+
+# Maven
+**/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+
+# Ignore JARs globally unless forced with git add -f
+*.jar
