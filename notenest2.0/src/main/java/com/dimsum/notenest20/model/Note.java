@@ -9,22 +9,19 @@ public class Note {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
 	private String title;
-
-	@Column(nullable = false)
 	private String stream;
-
-	@Column(nullable = false)
 	private String year;
 
-	@Column(nullable = false)
-	private String fileLink; // This will hold the accessible file URL/path
+	@Lob
+	@Column(columnDefinition = "LONGBLOB")
+	private byte[] fileData; // <-- stores PDF bytes directly
 
 	private String uploadedBy;
 
-	// --- Getters and Setters ---
+	private String fileName; // optional, for download/display
 
+	// Getters and Setters
 	public Long getId() {
 		return id;
 	}
@@ -57,12 +54,12 @@ public class Note {
 		this.year = year;
 	}
 
-	public String getFileLink() {
-		return fileLink;
+	public byte[] getFileData() {
+		return fileData;
 	}
 
-	public void setFileLink(String fileLink) {
-		this.fileLink = fileLink;
+	public void setFileData(byte[] fileData) {
+		this.fileData = fileData;
 	}
 
 	public String getUploadedBy() {
@@ -71,5 +68,13 @@ public class Note {
 
 	public void setUploadedBy(String uploadedBy) {
 		this.uploadedBy = uploadedBy;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 }
