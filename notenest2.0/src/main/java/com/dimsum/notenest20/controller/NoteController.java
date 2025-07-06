@@ -85,71 +85,66 @@ import org.springframework.web.multipart.MultipartFile;
 @CrossOrigin(origins = "*")
 public class NoteController {
 
-    private final NoteRepository noteRepository;
+	private final NoteRepository noteRepository;
 
-    public NoteController(NoteRepository noteRepository) {
-        this.noteRepository = noteRepository;
-    }
+	public NoteController(NoteRepository noteRepository) {
+		this.noteRepository = noteRepository;
+	}
 
-    // Upload PDF directly to DB
-    @PostMapping("/upload")
-    public ResponseEntity<?> uploadNote(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("title") String title,
-            @RequestParam("stream") String stream,
-            @RequestParam("year") String year,
-            @RequestParam("uploadedBy") String uploadedBy) {
+	// Upload PDF directly to DB
+	@PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> uploadNote(@RequestParam("file") MultipartFile file, @RequestParam("title") String title,
+			@RequestParam("stream") String stream, @RequestParam("year") String year,
+			@RequestParam("uploadedBy") String uploadedBy) {
 
-        try {
-            Note note = new Note();
-            note.setTitle(title);
-            note.setStream(stream);
-            note.setYear(year);
-            note.setUploadedBy(uploadedBy);
-            note.setFileName(file.getOriginalFilename());
-            note.setFileData(file.getBytes());
+		try {
+			Note note = new Note();
+			note.setTitle(title);
+			note.setStream(stream);
+			note.setYear(year);
+			note.setUploadedBy(uploadedBy);
+			note.setFileName(file.getOriginalFilename());
+			note.setFileData(file.getBytes());
 
-            Note saved = noteRepository.save(note);
-            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save file.");
-        }
-    }
+			Note saved = noteRepository.save(note);
+			return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+		} catch (IOException e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save file.");
+		}
+	}
 
-    // Serve PDF from DB
-    @GetMapping("/file/{id}")
-    public ResponseEntity<byte[]> downloadNote(@PathVariable Long id) {
-        return noteRepository.findById(id)
-                .map(note -> {
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.setContentType(MediaType.APPLICATION_PDF);
-                    headers.setContentDisposition(ContentDisposition.inline().filename(note.getFileName()).build());
-                    return new ResponseEntity<>(note.getFileData(), headers, HttpStatus.OK);
-                })
-                .orElse(ResponseEntity.notFound().build());
-    }
+	// Serve PDF from DB
+	@GetMapping("/file/{id}")
+	public ResponseEntity<byte[]> downloadNote(@PathVariable Long id) {
+		return noteRepository.findById(id).map(note -> {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_PDF);
+			headers.setContentDisposition(ContentDisposition.inline().filename(note.getFileName()).build());
+			return new ResponseEntity<>(note.getFileData(), headers, HttpStatus.OK);
+		}).orElse(ResponseEntity.notFound().build());
+	}
 
-    @GetMapping("/all")
-    public List<Note> getAllNotes() {
-        return noteRepository.findAll();
-    }
+	@GetMapping("/all")
+	public List<Note> getAllNotes() {
+		return noteRepository.findAll();
+	}
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteNote(@PathVariable Long id) {
-        if (!noteRepository.existsById(id)) return ResponseEntity.notFound().build();
-        noteRepository.deleteById(id);
-        return ResponseEntity.ok("Note deleted.");
-    }
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deleteNote(@PathVariable Long id) {
+		if (!noteRepository.existsById(id))
+			return ResponseEntity.notFound().build();
+		noteRepository.deleteById(id);
+		return ResponseEntity.ok("Note deleted.");
+	}
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateNote(@PathVariable Long id, @RequestBody Note updatedNote) {
-        return noteRepository.findById(id).map(note -> {
-            note.setTitle(updatedNote.getTitle());
-            note.setStream(updatedNote.getStream());
-            note.setYear(updatedNote.getYear());
-            note.setUploadedBy(updatedNote.getUploadedBy());
-            return ResponseEntity.ok(noteRepository.save(note));
-        }).orElse(ResponseEntity.notFound().build());
-    }
+	@PutMapping("/{id}")
+	public ResponseEntity<?> updateNote(@PathVariable Long id, @RequestBody Note updatedNote) {
+		return noteRepository.findById(id).map(note -> {
+			note.setTitle(updatedNote.getTitle());
+			note.setStream(updatedNote.getStream());
+			note.setYear(updatedNote.getYear());
+			note.setUploadedBy(updatedNote.getUploadedBy());
+			return ResponseEntity.ok(noteRepository.save(note));
+		}).orElse(ResponseEntity.notFound().build());
+	}
 }
-
