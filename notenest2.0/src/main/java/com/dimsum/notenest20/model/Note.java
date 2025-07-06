@@ -9,12 +9,21 @@ public class Note {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(nullable = false)
 	private String title;
-	private String stream;
-	private String year;
-	private String fileLink;
 
-	private String uploadedBy; // Optional
+	@Column(nullable = false)
+	private String stream;
+
+	@Column(nullable = false)
+	private String year;
+
+	@Column(nullable = false)
+	private String fileLink; // This will hold the accessible file URL/path
+
+	private String uploadedBy;
+
+	// --- Getters and Setters ---
 
 	public Long getId() {
 		return id;
@@ -63,5 +72,4 @@ public class Note {
 	public void setUploadedBy(String uploadedBy) {
 		this.uploadedBy = uploadedBy;
 	}
-
 }
