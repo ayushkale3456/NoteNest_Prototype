@@ -10,12 +10,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-	/*
-	 * // Remove @PostConstruct after confirming it loads on Render.com
-	 * 
-	 * @PostConstruct public void init() {
-	 * System.out.println("====== WebConfig is being initialized. ======"); }
-	 */
+//	/*
+//	 * // Remove @PostConstruct after confirming it loads on Render.com
+//	 * 
+//	 * @PostConstruct public void init() {
+//	 * System.out.println("====== WebConfig is being initialized. ======"); }
+//	 */
 
 	@Override
 	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
