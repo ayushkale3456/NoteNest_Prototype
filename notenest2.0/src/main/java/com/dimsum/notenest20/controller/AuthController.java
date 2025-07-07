@@ -4,6 +4,7 @@ import com.dimsum.notenest20.model.Role;
 import com.dimsum.notenest20.model.User;
 import com.dimsum.notenest20.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,10 +32,17 @@ public class AuthController {
 		String roleStr = body.get("role");
 
 		if (userRepository.existsByEmail(email)) {
-			return ResponseEntity.badRequest().body("Email already exists");
+			// Return structured JSON for error
+			return ResponseEntity.badRequest().body(Map.of("message", "Email already exists"));
 		}
 
-		Role role = Role.valueOf(roleStr.toUpperCase());
+		// Handle potential invalid role string
+		Role role;
+		try {
+			role = Role.valueOf(roleStr.toUpperCase());
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.badRequest().body(Map.of("message", "Invalid role specified"));
+		}
 
 		User user = new User();
 		user.setName(name);
@@ -45,7 +53,7 @@ public class AuthController {
 		user.setRole(role);
 
 		userRepository.save(user);
-		return ResponseEntity.ok("User registered successfully");
+		return ResponseEntity.ok(Map.of("message", "User registered successfully"));
 	}
 
 	@PostMapping("/login")
@@ -58,8 +66,9 @@ public class AuthController {
 				return ResponseEntity.ok(Map.of("name", user.getName(), "email", user.getEmail(), "stream",
 						user.getStream(), "year", user.getYear(), "role", user.getRole().name()));
 			} else {
-				return ResponseEntity.status(401).body("Invalid password");
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid password"));
 			}
-		}).orElse(ResponseEntity.status(404).body("User not found"));
+		}).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found")));
+
 	}
 }

@@ -5,20 +5,25 @@ import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import jakarta.annotation.PostConstruct;
+// No @PostConstruct for deployment (assuming you confirmed it loads)
+// import jakarta.annotation.PostConstruct;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-	@PostConstruct
-    public void init() {
-        System.out.println("WebConfig is being initialized."); // Or use a proper logger
-    }
+	/*
+	 * // Remove @PostConstruct after confirming it loads on Render.com
+	 * 
+	 * @PostConstruct public void init() {
+	 * System.out.println("====== WebConfig is being initialized. ======"); }
+	 */
+
 	@Override
 	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-	    configurer
-	        .favorParameter(false)
-	        .ignoreAcceptHeader(true)
-	        .defaultContentType(MediaType.MULTIPART_FORM_DATA); // allow multipart by default
+		configurer.favorParameter(false) // Don't use URL parameters (e.g., ?format=json) for content negotiation
+				// .ignoreAcceptHeader(true) // DO NOT ignore Accept headers for a REST API
+				.defaultContentType(MediaType.APPLICATION_JSON) // Default to JSON if Accept header is not specified
+				.mediaType("json", MediaType.APPLICATION_JSON) // Optional: allow .json extension for content type
+				.mediaType("xml", MediaType.APPLICATION_XML); // Optional: allow .xml extension for content type
 	}
 
 }
