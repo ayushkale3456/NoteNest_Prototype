@@ -92,7 +92,7 @@ public class NoteController {
 	}
 
 	// Upload PDF directly to DB
-	@PostMapping(value = "/upload")
+	@PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<?> uploadNote(@RequestParam("file") MultipartFile file, @RequestParam("title") String title,
 			@RequestParam("stream") String stream, @RequestParam("year") String year,
 			@RequestParam("uploadedBy") String uploadedBy) {
