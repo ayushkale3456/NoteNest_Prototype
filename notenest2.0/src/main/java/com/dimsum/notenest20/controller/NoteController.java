@@ -92,7 +92,7 @@ public class NoteController {
 	}
 
 	// Upload PDF directly to DB
-	@PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PostMapping(value = "/upload")
 	public ResponseEntity<?> uploadNote(@RequestParam("file") MultipartFile file, @RequestParam("title") String title,
 			@RequestParam("stream") String stream, @RequestParam("year") String year,
 			@RequestParam("uploadedBy") String uploadedBy) {
@@ -107,7 +107,7 @@ public class NoteController {
 			note.setFileData(file.getBytes());
 
 			Note saved = noteRepository.save(note);
-			return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+			return ResponseEntity.status(HttpStatus.CREATED).body("Note uploaded successfully with ID: " + saved.getId());
 		} catch (IOException e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save file.");
 		}
