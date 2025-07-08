@@ -1,9 +1,12 @@
+com\dimsum\notenest20\repository\ProjectRepository.class
+com\dimsum\notenest20\model\Project.class
+com\dimsum\notenest20\controller\AuthController.class
+com\dimsum\notenest20\controller\NoteController.class
+com\dimsum\notenest20\controller\ProjectController.class
 com\dimsum\notenest20\model\Note.class
 com\dimsum\notenest20\model\User.class
-com\dimsum\notenest20\controller\AuthController.class
 com\dimsum\notenest20\repository\UserRepository.class
 com\dimsum\notenest20\WebConfig.class
 com\dimsum\notenest20\model\Role.class
 com\dimsum\notenest20\repository\NoteRepository.class
 com\dimsum\notenest20\Application.class
-com\dimsum\notenest20\controller\NoteController.class
