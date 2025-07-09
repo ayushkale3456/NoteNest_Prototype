@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.Map;
 
@@ -71,4 +72,10 @@ public class AuthController {
 		}).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found")));
 
 	}
+	
+	@GetMapping("/me")
+	public ResponseEntity<?> getLoggedInUserDetails(@AuthenticationPrincipal User user) {
+	    return ResponseEntity.ok(user); // Return name, email, role, etc.
+	}
+
 }
