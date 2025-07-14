@@ -123,6 +123,12 @@ public class NoteController {
 			return new ResponseEntity<>(note.getFileData(), headers, HttpStatus.OK);
 		}).orElse(ResponseEntity.notFound().build());
 	}
+	
+	@GetMapping("/stream/{stream}")
+	public List<Note> getNotesByStream(@PathVariable String stream) {
+	    return noteRepository.findByStream(stream);
+	}
+
 
 	@GetMapping("/all")
 	public List<Note> getAllNotes() {
