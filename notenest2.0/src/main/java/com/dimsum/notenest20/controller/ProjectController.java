@@ -53,6 +53,13 @@ public class ProjectController {
 		return repo.findAll();
 	}
 
+	// Get projects filtered by stream
+	@GetMapping("/stream/{stream}")
+	public ResponseEntity<List<Project>> getByStream(@PathVariable String stream) {
+	    List<Project> projects = repo.findByStreamIgnoreCase(stream);
+	    return ResponseEntity.ok(projects);
+	}
+	
 	// Delete project
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {

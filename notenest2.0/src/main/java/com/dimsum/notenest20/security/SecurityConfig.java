@@ -86,21 +86,13 @@ public class SecurityConfig {
 																													// sessions
 																													// for
 																													// JWT
-				.authorizeHttpRequests(authorize -> authorize.requestMatchers("/api/auth/**").permitAll() // Allow
-																											// access to
-																											// auth
-																											// endpoints
-						.requestMatchers("/api/notes/all", "/api/notes/file/**", "/api/notes/stream/**").permitAll() // Allow public access to
-																								// all notes/files
-																								// (adjust as needed)
-						.requestMatchers("/api/projects/all", "/api/projects/file/**", "/api/projects/upload", "/api/projects/link").permitAll() // Allow public
-																									// access to all
-																									// projects/files
-																									// (adjust as
-																									// needed)
-						.requestMatchers("/admin/**").hasRole("ADMIN") // Example: only ADMIN can access /admin
-						.anyRequest().authenticated() // All other requests must be authenticated
-				)
+				.authorizeHttpRequests(auth -> auth
+					    .requestMatchers("/api/auth/**").permitAll()
+					    .requestMatchers("/api/notes/**").permitAll()
+					    .requestMatchers("/api/projects/**").permitAll()
+					    .requestMatchers("/admin/**").hasRole("ADMIN")
+					    .anyRequest().authenticated()
+					)
 				// Add JWT filter here (after you implement it)
 				// .addFilterBefore(jwtRequestFilter,
 				// UsernamePasswordAuthenticationFilter.class)
