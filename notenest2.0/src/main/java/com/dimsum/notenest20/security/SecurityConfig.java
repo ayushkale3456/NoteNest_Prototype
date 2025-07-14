@@ -93,7 +93,7 @@ public class SecurityConfig {
 						.requestMatchers("/api/notes/all", "/api/notes/file/**", "/api/notes/stream/**").permitAll() // Allow public access to
 																								// all notes/files
 																								// (adjust as needed)
-						.requestMatchers("/api/projects/all", "/api/projects/file/**").permitAll() // Allow public
+						.requestMatchers("/api/projects/all", "/api/projects/file/**", "/api/projects/upload", "/api/projects/link").permitAll() // Allow public
 																									// access to all
 																									// projects/files
 																									// (adjust as
