@@ -1,4 +1,4 @@
-package com.dimsum.notenest20.security; // Recommended package
+package com.dimsum.notenest20.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -13,47 +13,51 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-	@Value("${app.jwt.secret}") // Store this securely in application.properties/yml
+	@Value("${app.jwt.secret}")
 	private String jwtSecret;
 
-	@Value("${app.jwt.expiration-ms}") // Token expiration time in milliseconds
-	private int jwtExpirationMs;
+	@Value("${app.jwt.access-expiration-ms}")
+	private long accessTokenExpirationMs;
+
+	@Value("${app.jwt.refresh-expiration-ms}")
+	private long refreshTokenExpirationMs;
 
 	private Key getSigningKey() {
 		byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
-	public String generateToken(Authentication authentication) {
-		// The principal is your UserDetails implementation (your User model)
+	public String generateAccessToken(Authentication authentication) {
 		com.dimsum.notenest20.model.User userPrincipal = (com.dimsum.notenest20.model.User) authentication
 				.getPrincipal();
+		return buildToken(userPrincipal.getEmail(), accessTokenExpirationMs);
+	}
 
+	public String generateRefreshToken(Authentication authentication) {
+		com.dimsum.notenest20.model.User userPrincipal = (com.dimsum.notenest20.model.User) authentication
+				.getPrincipal();
+		return buildToken(userPrincipal.getEmail(), refreshTokenExpirationMs);
+	}
+
+	public String buildToken(String email, long expirationMs) {
 		Date now = new Date();
-		Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
+		Date expiryDate = new Date(now.getTime() + expirationMs);
 
-		return Jwts.builder().setSubject(userPrincipal.getEmail()) // Use email as subject
-				.setIssuedAt(new Date()).setExpiration(expiryDate).signWith(getSigningKey(), SignatureAlgorithm.HS512)
-				.compact();
+		return Jwts.builder().setSubject(email).setIssuedAt(now).setExpiration(expiryDate)
+				.signWith(getSigningKey(), SignatureAlgorithm.HS512).compact();
 	}
 
 	public String getUsernameFromToken(String token) {
 		return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody().getSubject();
 	}
 
-	public boolean validateToken(String authToken) {
+	public boolean validateToken(String token) {
 		try {
-			Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(authToken);
+			Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
 			return true;
-		} catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-			System.out.println("Invalid JWT signature: " + e.getMessage());
-		} catch (ExpiredJwtException e) {
-			System.out.println("Expired JWT token: " + e.getMessage());
-		} catch (UnsupportedJwtException e) {
-			System.out.println("Unsupported JWT token: " + e.getMessage());
-		} catch (IllegalArgumentException e) {
-			System.out.println("JWT claims string is empty: " + e.getMessage());
+		} catch (JwtException | IllegalArgumentException e) {
+			System.out.println("Invalid JWT token: " + e.getMessage());
+			return false;
 		}
-		return false;
 	}
 }

@@ -11,6 +11,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+// --- ADD THIS IMPORT ---
+import com.dimsum.notenest20.model.Role; // Adjust path if Role.java is in a different package
+// --- END ADDITION ---
+
 @Entity
 public class User implements UserDetails {
 
@@ -30,8 +34,7 @@ public class User implements UserDetails {
 	@Size(min = 6, message = "Password should be at least 6 characters")
 	private String password;
 
-	@Enumerated(EnumType.STRING)
-	private Role role;
+	private Role role; // Now 'Role' should be recognized
 
 	@NotBlank(message = "Stream is required")
 	private String stream;
@@ -42,7 +45,11 @@ public class User implements UserDetails {
 	@NotBlank(message = "University is required")
 	private String university;
 
+	@Column(length = 1000)
+	private String refreshToken;
+
 	// --- Getters and Setters ---
+	// ... (rest of your code remains the same)
 
 	public Long getId() {
 		return id;
@@ -107,6 +114,14 @@ public class User implements UserDetails {
 
 	public void setUniversity(String university) {
 		this.university = university;
+	}
+
+	public String getRefreshToken() {
+		return refreshToken;
+	}
+
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
 	}
 
 	// --- UserDetails Methods ---
