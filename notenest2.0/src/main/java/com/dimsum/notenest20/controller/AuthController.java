@@ -1,5 +1,6 @@
 package com.dimsum.notenest20.controller;
 
+import com.dimsum.notenest20.model.AuthResponse;
 import com.dimsum.notenest20.model.Role;
 import com.dimsum.notenest20.model.User;
 import com.dimsum.notenest20.repository.UserRepository;
@@ -90,34 +91,28 @@ public class AuthController {
 			String accessToken = tokenProvider.generateAccessToken(authentication);
 			String refreshToken = tokenProvider.generateRefreshToken(authentication);
 
-			User userPrincipal = (User) authentication.getPrincipal();
+			User user = userRepository.findByEmail(email).orElseThrow();
+			return ResponseEntity
+					.ok(new AuthResponse(accessToken, refreshToken, user.getRole().name(), user.getEmail()));
 
-			return ResponseEntity.ok(Map.of("accessToken", accessToken, "refreshToken", refreshToken, "name",
-					userPrincipal.getName(), "email", userPrincipal.getEmail(), "stream", userPrincipal.getStream(),
-					"year", userPrincipal.getYear(), "university", userPrincipal.getUniversity(), "role",
-					userPrincipal.getRole().name()));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid credentials"));
 		}
 	}
 
-	@PostMapping("/refresh")
-	public ResponseEntity<?> refreshAccessToken(@RequestBody Map<String, String> body) {
+	@PostMapping("/refresh-token")
+	public ResponseEntity<?> refreshToken(@RequestBody Map<String, String> body) {
 		String refreshToken = body.get("refreshToken");
-		if (!tokenProvider.validateToken(refreshToken)) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid refresh token"));
+
+		if (tokenProvider.validateToken(refreshToken)) {
+			String email = tokenProvider.getEmailFromToken(refreshToken);
+			String newAccessToken = tokenProvider.generateAccessTokenFromEmail(email);
+
+			return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(Map.of("message", "Invalid or expired refresh token"));
 		}
-
-		String email = tokenProvider.getUsernameFromToken(refreshToken);
-		User user = userRepository.findByEmail(email).orElse(null);
-		if (user == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "User not found"));
-		}
-
-		String newAccessToken = tokenProvider.generateAccessToken(
-				new UsernamePasswordAuthenticationToken(user.getEmail(), null, user.getAuthorities()));
-
-		return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
 	}
 
 	@GetMapping("/me")
