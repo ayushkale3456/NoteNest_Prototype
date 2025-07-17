@@ -11,13 +11,12 @@ public class Note {
 
 	private String title;
 	private String stream;
+	private String university;
 	private String year;
 
 	@Lob
 	@Column(columnDefinition = "LONGBLOB")
 	private byte[] fileData; // <-- stores PDF bytes directly
-
-	private String uploadedBy;
 
 	private String fileName; // optional, for download/display
 
@@ -46,6 +45,14 @@ public class Note {
 		this.stream = stream;
 	}
 
+	public String getUniversity() {
+		return university;
+	}
+
+	public void setUniversity(String university) {
+		this.university = university;
+	}
+
 	public String getYear() {
 		return year;
 	}
@@ -60,14 +67,6 @@ public class Note {
 
 	public void setFileData(byte[] fileData) {
 		this.fileData = fileData;
-	}
-
-	public String getUploadedBy() {
-		return uploadedBy;
-	}
-
-	public void setUploadedBy(String uploadedBy) {
-		this.uploadedBy = uploadedBy;
 	}
 
 	public String getFileName() {

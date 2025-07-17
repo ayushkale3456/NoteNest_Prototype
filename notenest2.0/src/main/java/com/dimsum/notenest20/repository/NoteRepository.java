@@ -9,4 +9,6 @@ public interface NoteRepository extends JpaRepository<Note, Long> {
 	List<Note> findByStreamAndYear(String stream, String year);
 
 	List<Note> findByStream(String stream);
+	
+	List<Note> findByUniversity(String university);
 }
