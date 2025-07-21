@@ -73,6 +73,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import com.dimsum.notenest20.model.User;
+
 import java.util.Date;
 
 @Component
@@ -89,8 +91,7 @@ public class JwtTokenProvider {
 
     // Generate Access Token
     public String generateAccessToken(Authentication authentication) {
-        org.springframework.security.core.userdetails.User userPrincipal = 
-                (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        User userPrincipal = (User) authentication.getPrincipal();
 
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
@@ -102,8 +103,7 @@ public class JwtTokenProvider {
 
     // Generate Refresh Token
     public String generateRefreshToken(Authentication authentication) {
-        org.springframework.security.core.userdetails.User userPrincipal = 
-                (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        User userPrincipal = (User) authentication.getPrincipal();
 
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername())

@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 // --- ADD THIS IMPORT ---
-import com.dimsum.notenest20.model.Role; // Adjust path if Role.java is in a different package
+//import com.dimsum.notenest20.model.Role; // Adjust path if Role.java is in a different package
 // --- END ADDITION ---
 
 @Entity
@@ -34,6 +34,7 @@ public class User implements UserDetails {
 	@Size(min = 6, message = "Password should be at least 6 characters")
 	private String password;
 
+	@Enumerated(EnumType.STRING)
 	private Role role; // Now 'Role' should be recognized
 
 	@NotBlank(message = "Stream is required")

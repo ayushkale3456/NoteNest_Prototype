@@ -91,6 +91,7 @@ public class SecurityConfig {
 					    .requestMatchers("/api/notes/**").permitAll()
 					    .requestMatchers("/api/projects/**").permitAll()
 					    .requestMatchers("/admin/**").hasRole("ADMIN")
+					    .requestMatchers("/api/auth/**", "/error").permitAll()
 					    .anyRequest().authenticated()
 					)
 				// Add JWT filter here (after you implement it)

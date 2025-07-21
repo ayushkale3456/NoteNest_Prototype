@@ -71,12 +71,16 @@
 package com.dimsum.notenest20.controller;
 
 import com.dimsum.notenest20.model.Note;
+import com.dimsum.notenest20.model.User;
 import com.dimsum.notenest20.repository.NoteRepository;
 
 import java.io.IOException;
 import java.util.*;
 
 import org.springframework.http.*;
+import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -97,7 +101,18 @@ public class NoteController {
 			@RequestParam("stream") String stream, @RequestParam("year") String year,
 			@RequestParam("university") String university) {
 
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		if (authentication == null || !authentication.isAuthenticated()
+				|| authentication.getPrincipal().equals("anonymousUser")) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+		}
+
+		User user = (User) authentication.getPrincipal();
+
 		try {
+			String uploadedBy = user.getName();
+
 			Note note = new Note();
 			note.setTitle(title);
 			note.setStream(stream);
@@ -105,6 +120,7 @@ public class NoteController {
 			note.setUniversity(university);
 			note.setFileName(file.getOriginalFilename());
 			note.setFileData(file.getBytes());
+			note.setUploadedBy(uploadedBy);
 
 			Note saved = noteRepository.save(note);
 			return ResponseEntity.status(HttpStatus.CREATED)
@@ -158,6 +174,7 @@ public class NoteController {
 			note.setStream(updatedNote.getStream());
 			note.setYear(updatedNote.getYear());
 			note.setUniversity(updatedNote.getUniversity());
+			note.setUploadedBy(updatedNote.getUploadedBy());
 			return ResponseEntity.ok(noteRepository.save(note));
 		}).orElse(ResponseEntity.notFound().build());
 	}

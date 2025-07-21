@@ -13,6 +13,7 @@ public class Note {
 	private String stream;
 	private String university;
 	private String year;
+	private String uploadedBy;
 
 	@Lob
 	@Column(columnDefinition = "LONGBLOB")
@@ -75,5 +76,13 @@ public class Note {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	public String getUploadedBy() {
+		return uploadedBy;
+	}
+
+	public void setUploadedBy(String uploadedBy) {
+		this.uploadedBy = uploadedBy;
 	}
 }

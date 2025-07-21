@@ -5,12 +5,14 @@ public class AuthResponse {
 	private String refreshToken;
 	private String role;
 	private String email;
+	private String stream;
 
-	public AuthResponse(String accessToken, String refreshToken, String role, String email) {
+	public AuthResponse(String accessToken, String refreshToken, String role, String email, String stream) {
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
 		this.role = role;
 		this.email = email;
+		this.stream = stream;
 	}
 
 	public String getAccessToken() {
@@ -43,6 +45,14 @@ public class AuthResponse {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getStream() {
+		return stream;
+	}
+
+	public void setStream(String stream) {
+		this.stream = stream;
 	}
 
 }

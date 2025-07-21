@@ -1,5 +1,6 @@
 com\dimsum\notenest20\model\AuthResponse.class
 com\dimsum\notenest20\repository\ProjectRepository.class
+com\dimsum\notenest20\security\UserDetailsServiceImpl.class
 com\dimsum\notenest20\security\JwtTokenProvider.class
 com\dimsum\notenest20\model\Project.class
 com\dimsum\notenest20\controller\AuthController.class

@@ -93,9 +93,11 @@ public class AuthController {
 
 			User user = userRepository.findByEmail(email).orElseThrow();
 			return ResponseEntity
-					.ok(new AuthResponse(accessToken, refreshToken, user.getRole().name(), user.getEmail()));
+					.ok(new AuthResponse(accessToken, refreshToken, user.getRole().name(), user.getEmail(), user.getStream()));
 
 		} catch (Exception e) {
+			logger.error("Login process failed for email: {}. Error: {}", email, e.getMessage());
+			logger.error("Stack trace:", e);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid credentials"));
 		}
 	}
