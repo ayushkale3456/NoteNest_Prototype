@@ -97,7 +97,7 @@ public class NoteController {
 
 	// Upload PDF with university field
 	@PostMapping("/upload")
-	public ResponseEntity<?> uploadNote(@RequestParam("file") MultipartFile file, @RequestParam("title") String title,
+	public ResponseEntity<?> uploadNote(@RequestParam("file") MultipartFile file, @RequestParam("contentsFile") MultipartFile contentsFile, @RequestParam("title") String title,
 			@RequestParam("stream") String stream, @RequestParam("year") String year,
 			@RequestParam("university") String university) {
 
@@ -120,6 +120,8 @@ public class NoteController {
 			note.setUniversity(university);
 			note.setFileName(file.getOriginalFilename());
 			note.setFileData(file.getBytes());
+			note.setContentsFileName(contentsFile.getOriginalFilename());
+			note.setContentsFileData(contentsFile.getBytes());
 			note.setUploadedBy(uploadedBy);
 
 			Note saved = noteRepository.save(note);
