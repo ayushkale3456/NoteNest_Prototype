@@ -4,6 +4,7 @@ com\dimsum\notenest20\security\UserDetailsServiceImpl.class
 com\dimsum\notenest20\security\JwtTokenProvider.class
 com\dimsum\notenest20\model\Project.class
 com\dimsum\notenest20\controller\AuthController.class
+com\dimsum\notenest20\controller\UserController.class
 com\dimsum\notenest20\controller\NoteController.class
 com\dimsum\notenest20\controller\ProjectController.class
 com\dimsum\notenest20\model\Note.class
