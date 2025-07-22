@@ -142,6 +142,18 @@ public class NoteController {
 			return new ResponseEntity<>(note.getFileData(), headers, HttpStatus.OK);
 		}).orElse(ResponseEntity.notFound().build());
 	}
+	
+	// Serve Contents PDF from DB
+	@GetMapping("/contents-file/{id}")
+	public ResponseEntity<byte[]> downloadContentsFile(@PathVariable Long id) {
+	    return noteRepository.findById(id).map(note -> {
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.APPLICATION_PDF);
+	        headers.setContentDisposition(ContentDisposition.inline().filename(note.getContentsFileName()).build());
+	        return new ResponseEntity<>(note.getContentsFileData(), headers, HttpStatus.OK);
+	    }).orElse(ResponseEntity.notFound().build());
+	}
+
 
 	@GetMapping("/stream/{stream}")
 	public List<Note> getNotesByStream(@PathVariable String stream) {
